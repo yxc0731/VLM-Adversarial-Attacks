@@ -2,8 +2,9 @@ from transformers import CLIPModel, CLIPProcessor
 from PIL import Image
 import torch
 from torchvision.transforms.functional import to_tensor, to_pil_image
+import pandas as pd
 
-
+df = pd.read_csv('attack_dataset.csv')
 model = CLIPModel.from_pretrained(
     "openai/clip-vit-large-patch14")
 processor = CLIPProcessor.from_pretrained(
@@ -53,12 +54,21 @@ def optimize_image(img_harm_path, img_adv_path, learning_rate=0.01, num_iteratio
     return output_path
 
 
-output_image_path = optimize_image(
-    "/Illegal_activity/arson.png",
-    "/Illegal_activity_adv/arson.png",
-    learning_rate=0.01,
-    num_iterations=1000,
-    output_path="/clip/path_to_output_image.png"
-)
+for index, row in df.iterrows():
 
-print(f"Optimized image saved to: {output_image_path}")
+    traget_toxic_img = row['traget_toxic_img']
+    adv_toxic_img = row['adv_toxic_img']
+
+    traget_toxic_img_path = f"/{traget_toxic_img}"
+    adv_toxic_img_path = f"/{adv_toxic_img}"
+
+
+    output_image_path = optimize_image(
+        traget_toxic_img_path,
+        "/clean.jpeg",
+        learning_rate=0.01,
+        num_iterations=1000,
+        output_path=adv_toxic_img_path
+    )
+
+    print(f"Optimized image saved to: {output_image_path}")
