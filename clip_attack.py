@@ -4,6 +4,7 @@ import torch
 from torchvision.transforms.functional import to_tensor, to_pil_image
 import pandas as pd
 
+
 def normalize(images):
     mean = torch.tensor([0.48145466, 0.4578275, 0.40821073]).to(device)
     std = torch.tensor([0.26862954, 0.26130258, 0.27577711]).to(device)
@@ -11,25 +12,28 @@ def normalize(images):
     images = images / std[None, :, None, None]
     return images
 
+
 def denormalize(images):
     mean = torch.tensor([0.48145466, 0.4578275, 0.40821073]).to(device)
     std = torch.tensor([0.26862954, 0.26130258, 0.27577711]).to(device)
     images = images * std[None, :, None, None]
     images = images + mean[None, :, None, None]
     return images
-    
-df = pd.read_csv('attack_dataset.csv')
+
+
+df = pd.read_csv('/home/liuyi/attack_dataset.csv')[:5]
 
 model = CLIPModel.from_pretrained(
     "openai/clip-vit-large-patch14")
 processor = CLIPProcessor.from_pretrained(
     "openai/clip-vit-large-patch14")
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
-epsilon = 8/255  
-alpha = 1/255
+epsilon = 8 / 255
+alpha = 1 / 255
+
 
 def optimize_image_with_noise(img_harm_path, img_adv_path, num_iterations=1000,
                               output_path="final_adv_image.png"):
@@ -45,7 +49,7 @@ def optimize_image_with_noise(img_harm_path, img_adv_path, num_iterations=1000,
     adv_noise.retain_grad()
 
     H_harm = model.get_image_features(**inputs_harm).detach()
-                                  
+
     for iteration in range(num_iterations):
         adv_img = normalize(x + adv_noise)
         H_adv = model.get_image_features(pixel_values=adv_img)
@@ -68,18 +72,14 @@ def optimize_image_with_noise(img_harm_path, img_adv_path, num_iterations=1000,
 
 
 for index, row in df.iterrows():
-
     traget_toxic_img = row['traget_toxic_img']
     adv_toxic_img = row['adv_toxic_img']
 
     traget_toxic_img_path = f"/{traget_toxic_img}"
     adv_toxic_img_path = f"/{adv_toxic_img}"
-
-
-    output_image_path = optimize_image(
+    output_image_path = optimize_image_with_noise(
         traget_toxic_img_path,
         "/clean.jpeg",
-        learning_rate=0.01,
         num_iterations=1000,
         output_path=adv_toxic_img_path
     )
