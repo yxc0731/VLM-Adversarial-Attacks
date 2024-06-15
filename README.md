@@ -6,7 +6,7 @@ We take MiniGPT-4 (13B) as the sandbox to showcase our attacks. The following in
 ### 1. Set up the environment
 
 ```sh
-git clone https://github.com/yourusername/VLM-Adversarial-Attacks.git
+git clone https://github.com/yxc0731/VLM-Adversarial-Attacks.git
 
 cd VLM-Adversarial-Attacks
 
