@@ -61,11 +61,6 @@ def optimize_image_with_noise(img_harm_path, img_adv_path, num_iterations=1000,
         if loss.item() < 0.3:
             break
 
-        if iteration % 1000 == 0:
-            iter_image = to_pil_image((x + adv_noise).clamp(0, 1).detach().cpu().squeeze(0))
-            iter_image.save(os.path.join(output_folder, f"adv_image_{iteration}.png"))
-
-
     final_adv_image = to_pil_image((x + adv_noise).clamp(0, 1).detach().cpu().squeeze(0))
     final_adv_image.save(output_path)
 
