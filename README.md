@@ -11,8 +11,11 @@ git clone https://github.com/yourusername/VLM-Adversarial-Attacks.git
 cd VLM-Adversarial-Attacks
 
 pip install -r requirements.txt
-
-## Generate Visual Adversarial Examples
+```
+### 2. Generate Visual Adversarial Examples
+```sh
+python clip_attack.py
+```
 
 ## Dataset Details
 This dataset includes 14 security scenarios prohibited by OpenAI, with each scenario providing 10 corresponding harmful images, each accompanied by a prompt example.
