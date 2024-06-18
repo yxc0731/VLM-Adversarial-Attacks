@@ -31,7 +31,7 @@ processor = CLIPProcessor.from_pretrained(
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
-epsilon = 8 / 255
+epsilon = 64 / 255
 alpha = 1 / 255
 
 
