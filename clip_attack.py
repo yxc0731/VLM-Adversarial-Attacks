@@ -3,7 +3,7 @@ from PIL import Image
 import torch
 from torchvision.transforms.functional import to_tensor, to_pil_image
 import pandas as pd
-
+import os
 
 def normalize(images):
     mean = torch.tensor([0.48145466, 0.4578275, 0.40821073]).to(device)
@@ -77,6 +77,11 @@ for index, row in df.iterrows():
 
     traget_toxic_img_path = f"/{traget_toxic_img}"
     adv_toxic_img_path = f"/{adv_toxic_img}"
+
+    adv_toxic_img_dir = os.path.dirname(adv_toxic_img_path)
+    if not os.path.exists(adv_toxic_img_dir):
+        os.makedirs(adv_toxic_img_dir)
+        
     output_image_path = optimize_image_with_noise(
         traget_toxic_img_path,
         "/clean.jpeg",
